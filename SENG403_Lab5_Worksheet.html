@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SENG 403 Lab 5 Worksheet</title>
+<style>
+:root{
+  --bg:#F5F7F8; --surface:#FFFFFF; --ink:#17202A; --muted:#5A6472; --line:#D5DCE1;
+  --accent:#0D6A68; --accent-soft:#E0EFEE; --warn:#9A5D0A; --warn-soft:#FAEFD9;
+  --code:#EEF2F3;
+  --sans:"Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:Consolas, "SF Mono", Menlo, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{color-scheme:dark;--bg:#12171C;--surface:#1A2129;--ink:#E3E8ED;--muted:#9AA5B0;--line:#2E3843;
+  --accent:#4DB5AE;--accent-soft:#16302F;--warn:#E2A94E;--warn-soft:#382B15;--code:#202A33}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;padding:0 16px}
+.wrap{max-width:1000px;margin:0 auto;padding-block:32px 80px;display:grid;gap:36px}
+h1{font-size:1.9rem;margin:0;line-height:1.2}
+h2{font-size:1.4rem;margin:0;color:var(--accent);border-top:1px solid var(--line);padding-top:24px}
+h3{font-size:1.1rem;margin:0}
+p{margin:0}
+section{display:grid;gap:14px}
+.lang-note{font-size:.88rem;color:var(--muted)}
+code,.mono{font-family:var(--mono);font-size:.9em}
+code{background:var(--code);padding:.05em .35em;border-radius:4px}
+pre{margin:0;background:var(--code);border-radius:8px;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:.88rem;line-height:1.5}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:10px}
+.callout{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:14px 18px;display:grid;gap:8px}
+.warnbox{background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;padding:12px 16px;display:grid;gap:6px}
+.id-row{display:flex;flex-wrap:wrap;gap:12px}
+.id-row label{display:grid;gap:4px;font-size:.85rem;color:var(--muted);flex:1 1 220px}
+input[type=text],textarea,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%}
+textarea{min-height:64px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--bg);font-size:.78rem;font-weight:600}
+tr:last-child td{border-bottom:0}
+td.n{width:36px;color:var(--muted);font-variant-numeric:tabular-nums}
+td input,td select,td textarea{padding:4px 6px}
+.inline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.inline label,.field{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+ul,ol{margin:0;padding-left:1.3em;display:grid;gap:6px}
+button{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:7px;padding:7px 14px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+@media (prefers-color-scheme: dark){button.primary{color:#0E1418}}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.saved{font-size:.82rem;color:var(--muted)}
+.track-java .py-only,.track-python .java-only{display:none}
+.step{display:inline-block;background:var(--accent);color:#fff;border-radius:5px;padding:0 7px;font-size:.8rem;font-weight:700;margin-right:6px}
+@media (prefers-color-scheme: dark){.step{color:#0E1418}}
+@media print{.bar,.noprint{display:none}body{background:#fff}}
+</style>
+</head>
+<body class="track-python">
+<div class="wrap">
+
+<header style="display:grid;gap:14px">
+  <div class="lang-note">SENG 403 · Software Quality Assurance and Testing · Gökçer Gökdal</div>
+  <h1>Lab 5 Worksheet · Week 9</h1>
+  <p>In this lab you do white-box testing. First you measure statement and branch coverage with a tool. Then you write tests for the branches that are missing. At the end you do mutation testing. The lab takes about 60 minutes.</p>
+  <p class="lang-note">You can write your answers in English or in Turkish.</p>
+  <div class="id-row">
+    <label>Your name (or the names of your pair)<input type="text" data-k="name" data-label="Name(s)"></label>
+    <label>Your student number<input type="text" data-k="no" data-label="Student no"></label>
+    <label>Your track (choose one language)
+      <select data-k="track" data-label="Track" id="track">
+        <option value="python">Python + pytest + coverage.py</option>
+        <option value="java">Java + JUnit 5 + JaCoCo + PIT</option>
+      </select>
+    </label>
+  </div>
+  <div class="callout">
+    <p><b>Do you need a word, a rule or a command?</b> Open <a href="SENG403_Lab5_Cheatsheet.html" target="_blank" rel="noopener">SENG403_Lab5_Cheatsheet.html</a> in another browser tab and keep it open.</p>
+  </div>
+  <div class="warnbox">
+    <p><b>This browser saves your answers automatically.</b> At the end of the lab, click the button <b>Download my answers</b>. Then hand in the downloaded file together with your code file and your test file.</p>
+  </div>
+</header>
+
+<section>
+  <h2>How this lab works</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Minutes</th><th>Part</th><th>What you do</th></tr></thead>
+    <tbody>
+      <tr><td>0–5</td><td>Setup</td><td>You run the tests. The steps are in README.md. All 5 tests pass.</td></tr>
+      <tr><td>5–23</td><td>Part A</td><td><b>Measure.</b> You read the specification. You run the coverage tool and read its report.</td></tr>
+      <tr><td>23–40</td><td>Part B</td><td><b>Cover.</b> You add tests until every branch is covered. You look at what the new tests show you.</td></tr>
+      <tr><td>40–60</td><td>Part C</td><td><b>Mutate.</b> You run the mutation tool. You kill the mutants that survived. Then you think about the results.</td></tr>
+      <tr><td>bonus</td><td>Part D</td><td><b>This part is optional.</b> You ask an LLM to write the tests. Then you measure its tests with the same two tools.</td></tr>
+      <tr><td>60–75</td><td>Debrief</td><td>The class talks about the results. Then you download your answers and hand them in.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <p>1. Today you <b>may read the code</b>. This is white-box testing. In white-box testing, the tests come from the structure of the code.</p>
+    <p>2. The <b>input</b> of a new test comes from the code. Ask yourself: "Which line or branch do I want to reach?" The <b>expected result</b> always comes from the <b>specification</b>. Never copy the expected result from what the code returns.</p>
+  </div>
+</section>
+
+<section data-sec="Part A · Measure">
+  <h2>Part A · Measure (about 18 minutes)</h2>
+
+  <div class="card" data-sub="A0 Specification">
+    <h3><span class="step">A0</span>Read the specification (3 minutes)</h3>
+    <p>The JuiceBar sells juice in bottles. The function <code class="py-only">order_price(qty, size, member, coupon)</code><code class="java-only">JuiceBar.orderPrice(qty, size, member, coupon)</code> returns the price of an order in TL. It uses the small function <code class="py-only">bottle_price(size)</code><code class="java-only">JuiceBar.bottlePrice(size)</code>.</p>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td>S1</td><td>The quantity <code>qty</code> is a whole number <b>from 1 to 20</b> bottles. If it is less than 1 or more than 20, the function raises <code class="py-only">ValueError</code><code class="java-only">IllegalArgumentException</code>.</td></tr>
+        <tr><td>S2</td><td>All bottles in one order have the same <code>size</code>. A small bottle (<code>"S"</code>) costs <b>40 TL</b>. A large bottle (<code>"L"</code>) costs <b>60 TL</b>. For any other size, the function raises <code class="py-only">ValueError</code><code class="java-only">IllegalArgumentException</code>.</td></tr>
+        <tr><td>S3</td><td>An order of <b>10 bottles or more</b> gets <b>50 TL off</b>.</td></tr>
+        <tr><td>S4</td><td>If the customer has a <b>coupon</b>, the customer gets <b>10 % off</b>. The 10 % is taken from the price after S3.</td></tr>
+        <tr><td>S5</td><td>A <b>member</b> gets <b>15 TL off</b>. This happens at the end, after S3 and S4.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="lang-note">Here is an example. A customer buys 12 small bottles. The customer has no coupon and is not a member. The price is 12 × 40 = 480. Then S3 takes 50 TL off: 480 − 50 = <b>430 TL</b>.</p>
+    <label class="field"><span>Calculate this price by hand with the rules S1–S5: 12 <b>large</b> bottles, with a coupon, for a member. Write your steps and the final price.</span><input type="text" data-k="a0" data-label="A0 price by hand (12 large, coupon, member)"></label>
+  </div>
+
+  <div class="card" data-sub="A1 Coverage report">
+    <h3><span class="step">A1</span>Run the coverage tool and read the report (8 minutes)</h3>
+    <p class="py-only">Run this command in the folder that has the file <code>juicebar.py</code>:</p>
+<pre class="py-only">pytest --cov=juicebar --cov-branch --cov-report=term-missing test_juicebar.py</pre>
+    <p class="java-only">Go to the <code>java</code> folder and run <code>mvn -q test</code>. Then open the file <code>target/site/jacoco/index.html</code> in your browser. To see the code in colours, click <b>default</b>, then <b>JuiceBar</b>, then the name of a method.</p>
+    <p>Copy the numbers from the report into the boxes below.</p>
+    <div class="inline py-only">
+      <label>Stmts<input type="text" data-k="a1stmts" data-label="A1 Stmts"></label>
+      <label>Miss<input type="text" data-k="a1miss" data-label="A1 Miss"></label>
+      <label>Branch<input type="text" data-k="a1branch" data-label="A1 Branch"></label>
+      <label>BrPart<input type="text" data-k="a1brpart" data-label="A1 BrPart"></label>
+      <label>Cover<input type="text" data-k="a1cover" data-label="A1 Cover"></label>
+      <label>Missing<input type="text" data-k="a1missing" data-label="A1 Missing"></label>
+    </div>
+    <div class="inline java-only">
+      <label>Lines: how many were missed, and how many are there in total?<input type="text" data-k="a1jlines" data-label="A1 Lines missed / total"></label>
+      <label>Branches: how many were missed, and how many are there in total?<input type="text" data-k="a1jbr" data-label="A1 Branches missed / total"></label>
+      <label>Which lines are red? (write the line numbers)<input type="text" data-k="a1jred" data-label="A1 Red lines"></label>
+      <label>Which lines are yellow? (write the line numbers)<input type="text" data-k="a1jyellow" data-label="A1 Yellow lines"></label>
+    </div>
+    <p>Now calculate the two coverage numbers yourself. The formulas are in section 3 of the cheatsheet.</p>
+    <div class="inline">
+      <label><span class="py-only">Statement coverage = (Stmts − Miss) ÷ Stmts</span><span class="java-only">Line coverage = lines that ran ÷ all lines</span><input type="text" data-k="a1stmtcov" data-label="A1 statement (line) coverage %"></label>
+      <label>Branch coverage = branches taken ÷ all branches<input type="text" data-k="a1brcov" data-label="A1 branch coverage %"></label>
+    </div>
+    <label class="field"><span>Look at the lines that never ran. Which rules of the specification (S1–S5) did the team's tests <b>not</b> test at all?</span><textarea data-k="a1rules" data-label="A1 rules that no test ran"></textarea></label>
+  </div>
+
+  <div class="card" data-sub="A2 Predict, then compare">
+    <h3><span class="step">A2</span>Predict by hand, then compare with the tool (7 minutes)</h3>
+    <p>Look only at the small function <code class="py-only">bottle_price</code><code class="java-only">bottlePrice</code>. It has two decisions. First, fill in the left half of the table for the team's tests. Then <b>imagine</b> that you add this new test:</p>
+<pre class="py-only">def test_large_bottle():
+    assert bottle_price("L") == 60</pre>
+<pre class="java-only">@Test
+void largeBottle() {
+    assertEquals(60, JuiceBar.bottlePrice("L"));
+}</pre>
+    <p>Do <b>not</b> run the new test yet. Fill in the right half of the table and write your prediction.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Decision</th><th>Team's tests: was it ever true?</th><th>Team's tests: was it ever false?</th><th>With the new test: true?</th><th>With the new test: false?</th></tr></thead>
+      <tbody>
+        <tr><td><code class="py-only">size == "S"</code><code class="java-only">size.equals("S")</code></td>
+          <td><select data-k="a2.s.t0" data-label="A2 size S: true with team's tests"><option></option><option>yes</option><option>no</option></select></td>
+          <td><select data-k="a2.s.f0" data-label="A2 size S: false with team's tests"><option></option><option>yes</option><option>no</option></select></td>
+          <td><select data-k="a2.s.t1" data-label="A2 size S: true with new test"><option></option><option>yes</option><option>no</option></select></td>
+          <td><select data-k="a2.s.f1" data-label="A2 size S: false with new test"><option></option><option>yes</option><option>no</option></select></td></tr>
+        <tr><td><code class="py-only">size == "L"</code><code class="java-only">size.equals("L")</code></td>
+          <td><select data-k="a2.l.t0" data-label="A2 size L: true with team's tests"><option></option><option>yes</option><option>no</option><option>never reached</option></select></td>
+          <td><select data-k="a2.l.f0" data-label="A2 size L: false with team's tests"><option></option><option>yes</option><option>no</option><option>never reached</option></select></td>
+          <td><select data-k="a2.l.t1" data-label="A2 size L: true with new test"><option></option><option>yes</option><option>no</option><option>never reached</option></select></td>
+          <td><select data-k="a2.l.f1" data-label="A2 size L: false with new test"><option></option><option>yes</option><option>no</option><option>never reached</option></select></td></tr>
+      </tbody>
+    </table></div>
+    <div class="inline">
+      <label><span class="py-only">My prediction: with the new test, Miss will be ...</span><span class="java-only">My prediction: with the new test, the number of missed lines will be ...</span><input type="text" data-k="a2pmiss" data-label="A2 predicted Miss / missed lines"></label>
+      <label>My prediction: this line of the function will still never run ...<input type="text" data-k="a2pline" data-label="A2 predicted line still missing"></label>
+    </div>
+    <p>Now add the test under <b>YOUR TESTS</b> in <code class="py-only">test_juicebar.py</code><code class="java-only">JuiceBarTest.java</code>. Then run the command from A1 again.</p>
+    <div class="inline">
+      <label><span class="py-only">What does the tool say now? (Miss, BrPart, Cover, Missing)</span><span class="java-only">What does the tool say now? (lines missed / total, branches missed / total)</span><input type="text" data-k="a2actual" data-label="A2 tool output with the new test"></label>
+      <label>Was your prediction right? If it was wrong, what did you miss?<input type="text" data-k="a2ok" data-label="A2 prediction right?"></label>
+    </div>
+  </div>
+</section>
+
+<section data-sec="Part B · Cover">
+  <h2>Part B · Cover the missing branches (about 17 minutes)</h2>
+
+  <div class="card" data-sub="B1 Tests for the missing branches">
+    <h3><span class="step">B1</span>Add tests until branch coverage is 100 % (17 minutes)</h3>
+    <p>Do these steps for each line or branch that is still missing. First, find an <b>input</b> that goes there. Next, take the <b>expected result from the specification</b> (A0). Then write one test under <b>YOUR TESTS</b>. Run the coverage command again after each new test.</p>
+    <p class="py-only">Your goal is <code>Miss 0</code>, <code>BrPart 0</code> and <code>Cover 100%</code>.</p>
+    <p class="java-only">In this step, use the command <code>mvn -q test -Dmaven.test.failure.ignore=true</code>. With this command, Maven writes the report even when a test is red. Your goal is no red lines, no yellow lines, and Missed Branches <b>0 of 14</b>.</p>
+    <div class="tw"><table class="ft" data-t="b1" data-rows="6" data-cols="tinput,covers,expected,actual,result"></table></div>
+    <div class="inline">
+      <label>How many tests did you add?<input type="text" data-k="b1count" data-label="B1 tests added"></label>
+      <label><span class="py-only">Write the final report line: Stmts, Miss, Branch, BrPart, Cover.</span><span class="java-only">Write the final report: lines missed / total, branches missed / total.</span><input type="text" data-k="b1final" data-label="B1 final coverage numbers"></label>
+    </div>
+    <div class="warnbox">
+      <p><b>Is one of your new tests red?</b> Then do these three things in this order:</p>
+      <p>1. Check your expected value against the specification again. Is the test wrong, or is the code wrong?</p>
+      <p>2. If the code is wrong, write the five-line defect report below.</p>
+      <p>3. Today you are also the developer. Correct the code so that it follows the specification. Change as little as you can. Run the tests again. Every test must be green.</p>
+    </div>
+    <p>Write a defect report in five lines. Use the format from lecture slide 27.</p>
+    <label class="field">Title: say what is wrong and where, in one line.<input type="text" data-k="b1title" data-label="B1 report · Title"></label>
+    <label class="field">Steps: write the call, so that another person can repeat it.<input type="text" data-k="b1steps" data-label="B1 report · Steps"></label>
+    <div class="inline">
+      <label>Expected: write the expected value and the rule (S1–S5).<input type="text" data-k="b1exp" data-label="B1 report · Expected"></label>
+      <label>Actual: write the value that the code returned.<input type="text" data-k="b1act" data-label="B1 report · Actual"></label>
+    </div>
+    <label class="field">Evidence: write the name of the failing test and the line from the tool output.<input type="text" data-k="b1evi" data-label="B1 report · Evidence"></label>
+    <label class="field">What did you change in the code? Write the old line and the new line.<input type="text" data-k="b1fix" data-label="B1 change in the code"></label>
+  </div>
+</section>
+
+<section data-sec="Part C · Mutate">
+  <h2>Part C · Mutation testing (about 20 minutes)</h2>
+  <div class="callout">
+    <p>Check two things before you start Part C: <b>all tests are green</b>, and branch coverage is <b>100 %</b>. The mutation tool stops if a test already fails on the original code.</p>
+  </div>
+
+  <div class="card" data-sub="C1 Run the mutation tool">
+    <h3><span class="step">C1</span>Run the mutation tool and list the survivors (5 minutes)</h3>
+    <p class="py-only">Run <code>python mutation_run.py</code>. The tool prints one line for each mutant. Each line says <code>killed</code> or <code>SURVIVED</code>.</p>
+    <p class="java-only">Run <code>mvn -q test-compile org.pitest:pitest-maven:mutationCoverage</code>. Near the end of the output, find the line <code>&gt;&gt; Generated … mutations Killed …</code> and read it. Then open <code>target/pit-reports/index.html</code> and click <b>JuiceBar.java</b>. A red line has a mutant that was <b>not</b> killed (<code>SURVIVED</code> or <code>NO_COVERAGE</code>). The list under the code shows each change.</p>
+    <div class="inline">
+      <label>How many mutants are there in total?<input type="text" data-k="c1all" data-label="C1 all mutants"></label>
+      <label>How many mutants were killed?<input type="text" data-k="c1killed" data-label="C1 killed"></label>
+      <label>Mutation score = killed ÷ all<input type="text" data-k="c1score" data-label="C1 mutation score"></label>
+    </div>
+    <p>List every mutant that survived. For each one, think about this question: <b>which input</b> makes the original code and the mutant give <b>different</b> results?</p>
+    <div class="tw"><table class="ft" data-t="surv" data-rows="6" data-cols="mid,change,diff"></table></div>
+  </div>
+
+  <div class="card" data-sub="C2 Kill the survivors">
+    <h3><span class="step">C2</span>Kill the survivors (10 minutes)</h3>
+    <p>Sometimes a mutant survives in a line that the tests run. There are two possible reasons. Reason 1: no test uses the input where the change makes a difference. Reason 2: a test uses that input, but it does not <b>check</b> the result. For each survivor, add a new test or make an old test stronger. Take every expected value from the <b>specification</b>.</p>
+    <div class="tw"><table class="ft" data-t="kill" data-rows="6" data-cols="mid,test,expected,killed"></table></div>
+    <div class="warnbox">
+      <p><b>Is a new test red on the original code?</b> Then do the same three things as in B1. Check the specification, write down the defect below, and correct the code. Run the tests again. After that, run the mutation tool again.</p>
+    </div>
+    <label class="field">Did you find a defect in Part C? If yes, write the title, the call, the expected value (with the rule), the actual value, and what you changed in the code. If no, write "none".<textarea data-k="c2defect" data-label="C2 defect found in Part C"></textarea></label>
+    <div class="inline">
+      <label>New result: how many mutants are there in total?<input type="text" data-k="c2all" data-label="C2 all mutants"></label>
+      <label>New result: how many were killed?<input type="text" data-k="c2killed" data-label="C2 killed"></label>
+      <label>What is the new mutation score?<input type="text" data-k="c2score" data-label="C2 mutation score"></label>
+    </div>
+    <label class="field">Did you change any of the team's tests? If yes, which test did you change, and why?<textarea data-k="c2team" data-label="C2 team test changed"></textarea></label>
+  </div>
+
+  <div class="card" data-sub="C3 Reflect">
+    <h3><span class="step">C3</span>Think about the results (5 minutes)</h3>
+    <label class="field">Before C1, the coverage was 100 %. Why did some mutants survive anyway? Write one or two sentences.<textarea data-k="c3why" data-label="C3 why mutants survived at 100 % coverage"></textarea></label>
+    <div class="inline">
+      <label>What did the coverage report help you find in Part B?<textarea data-k="c3cov" data-label="C3 found with the coverage report"></textarea></label>
+      <label>What did the surviving mutants help you find in Part C?<textarea data-k="c3mut" data-label="C3 found with the surviving mutants"></textarea></label>
+    </div>
+    <label class="field">Your manager says: "Our coverage is 100 %, so our tests are good." Answer your manager in one sentence.<textarea data-k="c3boss" data-label="C3 answer to the manager"></textarea></label>
+  </div>
+</section>
+
+<section data-sec="Part D · Optional LLM">
+  <h2>Part D · Optional, at home: how good are the tests of an LLM? (15 minutes)</h2>
+  <div class="warnbox"><p>Do Part D only after Part C, or do it at home. You can use any LLM that you can reach. A free version is enough. The code of this lab is public, so it is safe to share. But never paste company code into an AI service without permission.</p></div>
+  <div class="card" data-sub="D1 Ask the LLM, then measure">
+    <h3><span class="step">D1</span>Ask the LLM, then measure its tests</h3>
+    <p>Start a new chat. Paste the prompt below. After the prompt, paste the table of rules S1–S5 from A0. Do <b>not</b> paste the code or your own tests.</p>
+<pre class="py-only">Write pytest tests for the functions bottle_price(size) and
+order_price(qty, size, member=False, coupon=False) of the module juicebar, described below.
+Give the expected value for every test.</pre>
+<pre class="java-only">Write a JUnit 5 test class JuiceBarLlmTest (default package) for the static methods
+JuiceBar.bottlePrice(String size) and
+JuiceBar.orderPrice(int qty, String size, boolean member, boolean coupon), described below.
+Both return int. Give the expected value for every test.</pre>
+    <p class="py-only">Save the answer of the LLM as <code>test_llm.py</code> in the same folder as <code>juicebar.py</code>. Then run these two commands:</p>
+<pre class="py-only">pytest --cov=juicebar --cov-branch --cov-report=term-missing test_llm.py
+python mutation_run.py --tests test_llm.py</pre>
+    <p class="java-only">Save the answer of the LLM as <code>src/test/java/JuiceBarLlmTest.java</code>. Then run these two commands:</p>
+<pre class="java-only">mvn -q test -Dtest=JuiceBarLlmTest
+mvn -q test-compile org.pitest:pitest-maven:mutationCoverage -Dpit.tests=JuiceBarLlmTest</pre>
+    <div class="inline">
+      <label>What is the name and the version of the LLM?<input type="text" data-k="d1llm" data-label="D1 LLM"></label>
+      <label>How many tests did it write? How many of them pass?<input type="text" data-k="d1n" data-label="D1 tests written / passed"></label>
+      <label>What is the coverage of ITS tests (statement and branch)?<input type="text" data-k="d1cov" data-label="D1 coverage of the LLM tests"></label>
+      <label>What is the mutation score of ITS tests?<input type="text" data-k="d1score" data-label="D1 mutation score of the LLM tests"></label>
+    </div>
+    <label class="field">Which mutants survived its tests? Did it write a wrong expected value?<textarea data-k="d1res" data-label="D1 survivors, wrong expected values"></textarea></label>
+    <label class="field">Compare these numbers with your own final numbers from C2. In one sentence, what does the comparison tell you?<textarea data-k="d1who" data-label="D1 comparison with my tests"></textarea></label>
+  </div>
+</section>
+
+<section>
+  <h2>Hand in</h2>
+  <p>Download your answers. Hand in the downloaded file together with <code class="py-only">test_juicebar.py</code><code class="java-only">JuiceBarTest.java</code> and <code class="py-only">juicebar.py</code><code class="java-only">JuiceBar.java</code>.</p>
+  <div class="bar">
+    <button class="primary" id="dl" type="button">Download my answers</button>
+    <button id="clear" type="button">Clear all</button>
+    <span class="saved" id="saved"></span>
+  </div>
+  <p id="clearConfirm" class="warnbox" hidden>Do you really want to delete every answer? Then click <b>Clear all</b> again within 5 seconds.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const KEY = 'seng403-lab5-worksheet';
+  const COLS = {
+    tinput:'Test input (the call)', covers:'The line or branch it reaches',
+    expected:'Expected (from the spec)', actual:'Actual', result:'Pass or fail',
+    mid:'Mutant (ID or line)', change:'The change',
+    diff:'An input where the original and the mutant give different results',
+    test:'New or stronger test (the call)', killed:'Is it killed now?'
+  };
+  const SELECTS = {
+    result:['Pass','Fail'],
+    killed:['Yes','No']
+  };
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; }
+  const savedEl = document.getElementById('saved');
+  function persist(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); savedEl.textContent = 'Saved at ' + new Date().toLocaleTimeString(); }
+    catch(e) { savedEl.textContent = 'This browser cannot save your answers. Download your answers before you close the page.'; }
+  }
+
+  document.querySelectorAll('table.ft').forEach(t => {
+    const id = t.dataset.t, rows = +t.dataset.rows, cols = t.dataset.cols.split(',');
+    let h = '<thead><tr><th>#</th>' + cols.map(c => `<th>${COLS[c]}</th>`).join('') + '</tr></thead><tbody>';
+    for (let r = 1; r <= rows; r++) {
+      h += `<tr><td class="n">${r}</td>` + cols.map(c => {
+        const k = `${id}.${r}.${c}`, lab = `${COLS[c]} ${r}`;
+        if (SELECTS[c]) return `<td><select data-k="${k}" aria-label="${lab}"><option></option>${SELECTS[c].map(o => `<option>${o}</option>`).join('')}</select></td>`;
+        if (c === 'tinput' || c === 'test' || c === 'diff' || c === 'covers') return `<td><textarea data-k="${k}" rows="2" aria-label="${lab}" style="min-width:200px"></textarea></td>`;
+        const w = (c === 'mid') ? ' style="min-width:80px;max-width:120px"' : ' style="min-width:100px"';
+        return `<td><input type="text" data-k="${k}"${w} aria-label="${lab}"></td>`;
+      }).join('') + '</tr>';
+    }
+    t.innerHTML = h + '</tbody>';
+  });
+
+  document.querySelectorAll('[data-k]').forEach(el => {
+    const k = el.dataset.k;
+    if (state[k] != null) el.value = state[k];
+    const save = () => { state[k] = el.value; persist(); };
+    el.addEventListener('input', save); el.addEventListener('change', save);
+  });
+
+  const track = document.getElementById('track');
+  function applyTrack(){ document.body.className = 'track-' + (track.value || 'python'); }
+  track.addEventListener('change', applyTrack); applyTrack();
+
+  function tableMd(t){
+    const cols = t.dataset.cols.split(','), rows = +t.dataset.rows, id = t.dataset.t;
+    let md = '| # | ' + cols.map(c => COLS[c]).join(' | ') + ' |\n|' + '---|'.repeat(cols.length + 1) + '\n';
+    for (let r = 1; r <= rows; r++) {
+      const vals = cols.map(c => (state[`${id}.${r}.${c}`] || '').replace(/\|/g, '/').replace(/\n/g, ' '));
+      if (vals.some(v => v.trim())) md += `| ${r} | ${vals.join(' | ')} |\n`;
+    }
+    return md;
+  }
+  document.getElementById('dl').addEventListener('click', () => {
+    const other = (state.track === 'java') ? '.py-only' : '.java-only';
+    const v = k => (state[k] || '').trim() || '—';
+    let md = `# SENG 403 · Lab 5 answers\n\n- Name(s): ${v('name')}\n- Student no: ${v('no')}\n- Track: ${state.track || 'python'}\n- Downloaded: ${new Date().toLocaleString()}\n`;
+    let part = '';
+    document.querySelectorAll('[data-sub]').forEach(card => {
+      const sec = card.closest('[data-sec]').dataset.sec;
+      if (sec !== part) { part = sec; md += `\n## ${sec}\n`; }
+      md += `\n### ${card.dataset.sub}\n\n`;
+      card.querySelectorAll('table.ft').forEach(t => { md += tableMd(t) + '\n'; });
+      card.querySelectorAll('[data-label]').forEach(el => { if (el.closest(other)) return; md += `- ${el.dataset.label}: ${v(el.dataset.k)}\n`; });
+    });
+    const blob = new Blob([md], {type: 'text/markdown;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SENG403_Lab5_${(state.no || 'answers').replace(/[^\w-]/g, '')}.md`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  let armed = null; const cc = document.getElementById('clearConfirm');
+  document.getElementById('clear').addEventListener('click', () => {
+    if (!armed) { cc.hidden = false; armed = setTimeout(() => { armed = null; cc.hidden = true; }, 5000); return; }
+    clearTimeout(armed); armed = null; cc.hidden = true;
+    state = {}; persist();
+    document.querySelectorAll('[data-k]').forEach(el => { el.value = ''; });
+    track.value = 'python'; applyTrack();
+  });
+})();
+</script>
+</body>
+</html>

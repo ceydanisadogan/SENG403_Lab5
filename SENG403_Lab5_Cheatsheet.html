@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SENG 403 Lab 5 Cheatsheet</title>
+<style>
+:root{
+  --bg:#F5F7F8; --surface:#FFFFFF; --ink:#17202A; --muted:#5A6472; --line:#D5DCE1;
+  --accent:#0D6A68; --accent-soft:#E0EFEE; --warn:#9A5D0A; --warn-soft:#FAEFD9; --code:#EEF2F3;
+  --sans:"Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:Consolas, "SF Mono", Menlo, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{color-scheme:dark;--bg:#12171C;--surface:#1A2129;--ink:#E3E8ED;--muted:#9AA5B0;--line:#2E3843;
+  --accent:#4DB5AE;--accent-soft:#16302F;--warn:#E2A94E;--warn-soft:#382B15;--code:#202A33}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;padding:0 16px}
+.wrap{max-width:1000px;margin:0 auto;padding-block:28px 64px;display:grid;gap:30px}
+h1{font-size:1.8rem;margin:0;line-height:1.2}
+h2{font-size:1.3rem;margin:0;color:var(--accent);border-top:1px solid var(--line);padding-top:20px}
+h3{font-size:1rem;margin:0}
+p{margin:0}
+section{display:grid;gap:12px}
+.note{font-size:.86rem;color:var(--muted)}
+code{font-family:var(--mono);font-size:.9em;background:var(--code);padding:.05em .35em;border-radius:4px}
+pre{margin:0;background:var(--code);border-radius:8px;padding:10px 12px;overflow-x:auto;font-family:var(--mono);font-size:.84rem;line-height:1.45}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.two>div{display:grid;gap:6px;align-content:start}
+.lbl{font-size:.75rem;font-weight:700;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+.callout{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;display:grid;gap:6px}
+.warnbox{background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;padding:12px 16px;display:grid;gap:6px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--bg);font-size:.76rem;font-weight:600}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap}
+td:first-child{min-width:130px}
+ul,ol{margin:0;padding-left:1.3em;display:grid;gap:4px}
+@page{size:A4;margin:14mm 12mm}
+@media print{body{background:#fff;font-size:12px;padding:0}.wrap,section,.two,.two>div{display:block}.wrap>*+*{margin-top:18px}section>*+*,.two>div+div,.two>div>*+*{margin-top:8px}pre{white-space:pre-wrap;font-size:.8rem}pre,.callout,.warnbox,tr{break-inside:avoid}.tw{overflow:visible;border-radius:0}td code{white-space:pre-wrap}h2{break-after:avoid}}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header style="display:grid;gap:10px">
+  <div class="note">SENG 403 · Software Quality Assurance and Testing · Gökçer Gökdal</div>
+  <h1>Lab 5 Cheatsheet · Coverage and mutation testing</h1>
+  <p class="note">Sources: Myers, Chapter 4 · ISTQB® CTFL 4.3 · Week 9 slides 6–18. Keep this page open during the lab. The examples on this page are the functions <code>grade</code> and <code>bill</code> from the lecture. They are not the lab code, so they do not give you the answers.</p>
+</header>
+
+<section>
+  <h2>0 · The example</h2>
+  <div class="two">
+    <div><span class="lbl">Code · grade.py</span>
+<pre> 1  def grade(score):
+ 2      if score &lt; 0 or score &gt; 100:
+ 3          return "error"
+ 4      if score &gt;= 50:
+ 5          result = "pass"
+ 6      else:
+ 7          result = "fail"
+ 8      return result</pre></div>
+    <div><span class="lbl">Tests · test_grade.py</span>
+<pre>def test_pass():
+    assert grade(70) == "pass"
+
+def test_error():
+    assert grade(-5) == "error"</pre>
+    <p class="note">This code has 7 statements: lines 1–5, 7 and 8. The line <code>else:</code> is not a statement, but the <code>def</code> line counts as one. The code has 2 decisions (lines 2 and 4), so it has 4 branches.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>1 · Words</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Word</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><b>Statement</b></td><td>A statement is one instruction in the code. It is usually one line.</td></tr>
+      <tr><td><b>Decision</b></td><td>A decision is a place where the code chooses a way, for example <code>if</code> or <code>while</code>. It has two outcomes: true and false.</td></tr>
+      <tr><td><b>Branch</b></td><td>A branch is one outcome of a decision. One <code>if</code> has 2 branches.</td></tr>
+      <tr><td><b>Condition</b></td><td>A condition is one small part of a decision. For example, <code>score &lt; 0 or score &gt; 100</code> is one decision with two conditions.</td></tr>
+      <tr><td><b>Coverage</b></td><td>Coverage = the items that our tests ran ÷ all items × 100 %.</td></tr>
+      <tr><td><b>Mutant</b></td><td>A mutant is a copy of the code with one small change.</td></tr>
+      <tr><td><b>Killed</b></td><td>A mutant is killed when at least one test fails on it. This is good.</td></tr>
+      <tr><td><b>Survived</b></td><td>A mutant survived when all tests pass on it. This means that the tests did not notice the change.</td></tr>
+      <tr><td><b>Mutation score</b></td><td>Mutation score = the mutants that were killed ÷ all mutants.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>2 · Statement and branch coverage</h2>
+  <div class="two">
+    <div><span class="lbl">Statement coverage</span><p>Statement coverage = the statements that the tests ran ÷ all statements.</p><p>Example: line 7 never ran, so the statement coverage is <b>6 of 7 = 86 %</b>.</p></div>
+    <div><span class="lbl">Branch coverage</span><p>Branch coverage = the branches that the tests took ÷ all branches. For 100 %, every decision must be true once <b>and</b> false once.</p><p>Example: line 4 was never false, so the branch coverage is <b>3 of 4 = 75 %</b>.</p></div>
+  </div>
+  <div class="callout"><p><b>Remember this rule:</b> 100 % branch coverage always gives 100 % statement coverage. The opposite is not true.</p></div>
+  <p>How do you close a gap? First, find an <b>input</b> that goes to the missing line or branch. In this example, any score from 0 to 49 works. Then take the <b>expected result</b> from the specification. With one more test, <code>grade(30) == "fail"</code>, both numbers become 100 %.</p>
+  <div class="warnbox"><p><b>Be careful with a decision that has <code>or</code> or <code>and</code>.</b> Branch coverage looks only at the final answer of the whole decision. With the inputs −5 and 70, line 2 was true once and false once. But the part <code>score &gt; 100</code> was never true. So nobody tested the upper limit.</p></div>
+</section>
+
+<section>
+  <h2>3 · How to read the report</h2>
+  <div class="two">
+    <div><span class="lbl">Python · coverage.py (pytest-cov)</span>
+<pre>Name       Stmts   Miss Branch BrPart  Cover   Missing
+grade.py       7      1      4      1    82%   7
+2 passed</pre>
+      <div class="tw"><table>
+        <tbody>
+          <tr><td><code>Stmts</code></td><td>This is the number of all statements.</td></tr>
+          <tr><td><code>Miss</code></td><td>This is the number of statements that never ran.</td></tr>
+          <tr><td><code>Branch</code></td><td>This is the number of all branches.</td></tr>
+          <tr><td><code>BrPart</code></td><td>This is the number of decisions that ran but went only one way.</td></tr>
+          <tr><td><code>Cover</code></td><td>This number puts statements <b>and</b> branches together. See the formula on the right.</td></tr>
+          <tr><td><code>Missing</code></td><td>These are the line numbers that never ran. <code>4-&gt;7</code> means that the jump from line 4 to line 7 never happened.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div><span class="lbl">The formulas</span>
+<pre>statements run   = Stmts - Miss              = 7 - 1 = 6
+statement cov.   = statements run / Stmts    = 6 / 7 = 86 %
+
+Cover            = (statements run + branches taken)
+                   / (Stmts + Branch)        = (6 + 3) / (7 + 4) = 82 %
+
+branches taken   = Cover x (Stmts + Branch) - statements run
+                 = 0.82 x 11 - 6 = 9 - 6     = 3   (round to a whole number)
+branch cov.      = branches taken / Branch   = 3 / 4 = 75 %</pre>
+      <p class="note">A branch in a line that never ran is also missed. So the number of branches taken can be smaller than Branch − BrPart.</p>
+    </div>
+  </div>
+  <div class="two">
+    <div><span class="lbl">Java · JaCoCo (target/site/jacoco/index.html)</span>
+      <div class="tw"><table>
+        <tbody>
+          <tr><td><b>Green line</b></td><td>The line ran.</td></tr>
+          <tr><td><b>Red line</b></td><td>The line never ran.</td></tr>
+          <tr><td><b>Yellow line</b> with a diamond</td><td>The decision went only one way. Put the mouse on the diamond to see a message like "1 of 2 branches missed".</td></tr>
+          <tr><td>Missed Branches</td><td>"3 of 8" means that 3 branches were missed, so 5 of the 8 branches were taken.</td></tr>
+          <tr><td>Missed · Lines</td><td>The first number is the lines that never ran. The second number is all lines.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div><span class="lbl">Two tools count in two ways</span>
+      <p>coverage.py counts a whole <code>if a or b</code> as <b>2</b> branches. JaCoCo counts each condition, so <code>if (a || b)</code> has <b>4</b> branches. JaCoCo counts only the lines of code inside methods. It does not count the method header or the constants. Because of this, the Python numbers and the Java numbers are not the same. Both of them are correct.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>4 · What 100 % coverage does not prove</h2>
+  <div class="two">
+    <div>
+<pre>def test_grade():
+    grade(70)
+    grade(30)
+    grade(-5)        # no assert!</pre>
+      <p class="note">This test gives 100 % statement coverage and 100 % branch coverage. But this test can never fail.</p>
+    </div>
+    <div>
+      <p><b>Coverage cannot see these things:</b></p>
+      <ul>
+        <li>It cannot see whether a test <b>checks</b> the result.</li>
+        <li>It cannot see code that is <b>missing</b>. A forgotten rule has no line.</li>
+        <li>It cannot see a wrong value at a <b>boundary</b>.</li>
+      </ul>
+      <p>Coverage shows you what you did <b>not</b> test. It does not show you what you tested well.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>5 · Mutation testing: we test the tests</h2>
+  <p>The tool makes one small change in the code. This changed copy is a <b>mutant</b>. Then the tool runs <b>your</b> tests on the mutant. Good tests must fail on it. Before this, all tests must pass on the original code.</p>
+  <div class="two">
+    <div><span class="lbl">Code and tests (100 % branch coverage)</span>
+<pre> 1  def bill(qty, member):
+ 2      price = qty * 10
+ 3      if qty &gt;= 5:
+ 4          price = price - 5
+ 5      if member:
+ 6          price = price - 2
+ 7      return price
+
+assert bill(8, True) == 73
+assert bill(1, False) == 10</pre></div>
+    <div><span class="lbl">The output of python mutation_run.py</span>
+<pre>ID   Line  Change    Result    Mutated line
+M01  2     * -&gt; /    killed    price = qty / 10
+M02  3     &gt;= -&gt; &gt;   SURVIVED  if qty &gt; 5:
+M03  4     - -&gt; +    killed    price = price + 5
+M04  6     - -&gt; +    killed    price = price + 2
+Killed 3 of 4 mutants.
+Mutation score = 3 / 4 = 75 %
+Survivors: M02 (line 3)</pre></div>
+  </div>
+  <h3>How to kill a mutant that survived</h3>
+  <ol>
+    <li>Read the change. Ask this question: <b>for which input</b> do the original code and the mutant give different results? For M02, only <code>qty = 5</code> gives a different result.</li>
+    <li>Look for a test with that input. If there is no such test, <b>add one</b>. If there is one, check that it <b>checks</b> the result with an assert. If it has no assert, add the assert.</li>
+    <li>Take the expected value from the <b>specification</b>, not from the code. For example, the rule "5 TL off for 5 bottles or more" gives <code>bill(5, False) == 45</code>.</li>
+    <li>Run the tests on the original code. Are they green? Then run the mutation tool again. <b>Is a test red?</b> Then the original code does not follow the specification. You found a defect.</li>
+  </ol>
+  <div class="two">
+    <div><span class="lbl">Java · PIT (target/pit-reports/index.html)</span>
+      <div class="tw"><table>
+        <tbody>
+          <tr><td><code>KILLED</code></td><td>A test failed on the mutant.</td></tr>
+          <tr><td><code>SURVIVED</code></td><td>The tests ran the line, and all of them passed.</td></tr>
+          <tr><td><code>NO_COVERAGE</code></td><td>No test runs this line. Count it as "not killed".</td></tr>
+          <tr><td>changed conditional boundary</td><td><code>&gt;</code> ↔ <code>&gt;=</code>, <code>&lt;</code> ↔ <code>&lt;=</code></td></tr>
+          <tr><td>negated conditional</td><td><code>==</code> ↔ <code>!=</code>, <code>&gt;</code> → <code>&lt;=</code> …</td></tr>
+          <tr><td>replaced integer subtraction with addition</td><td><code>-</code> → <code>+</code></td></tr>
+          <tr><td>replaced int return with 0</td><td><code>return x</code> → <code>return 0</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div><span class="lbl">Good to know</span>
+      <p>The console line <code>&gt;&gt; Generated 20 mutations Killed 15 (75%)</code> gives the mutation score: killed ÷ all.</p>
+      <p>When you change the code, the list of mutants can change too.</p>
+      <p>Some mutants behave exactly like the original code. They are called <b>equivalent mutants</b>. No test can kill them, so a person must decide about them.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>6 · Commands</h2>
+  <div class="tw"><table>
+    <thead><tr><th>What</th><th>Python (in the folder with juicebar.py)</th><th>Java (in the folder java)</th></tr></thead>
+    <tbody>
+      <tr><td>Setup</td><td><code>pip install -r requirements.txt</code> (Codespaces does this for you.)</td><td>Maven downloads the tools at the first run. This needs the internet. (Codespaces does this for you.)</td></tr>
+      <tr><td>Run the tests</td><td><code>pytest -v test_juicebar.py</code></td><td><code>mvn -q test</code></td></tr>
+      <tr><td>Coverage</td><td><code>pytest --cov=juicebar --cov-branch --cov-report=term-missing test_juicebar.py</code></td><td>Run <code>mvn -q test</code>, then open <code>target/site/jacoco/index.html</code>.</td></tr>
+      <tr><td>Coverage when a test is red</td><td>Use the same command.</td><td><code>mvn -q test -Dmaven.test.failure.ignore=true</code></td></tr>
+      <tr><td>Coverage in colours</td><td>Add <code>--cov-report=html</code> to the command, then open <code>htmlcov/index.html</code>.</td><td>In the report, click default, then JuiceBar, then a method.</td></tr>
+      <tr><td>Mutation testing</td><td><code>python mutation_run.py</code></td><td>Run <code>mvn -q test-compile org.pitest:pitest-maven:mutationCoverage</code>, then open <code>target/pit-reports/index.html</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><b>How to open an HTML report in Codespaces:</b> right-click the file in the Explorer and choose <b>Show Preview</b>. To see it in a normal browser tab, click the small globe icon at the top of the preview.</p>
+  <p class="note">Do you see <code>pytest: command not found</code>? Then use <code>python -m pytest …</code>. On some computers the command is <code>py</code> or <code>python3</code>, not <code>python</code>.</p>
+  <p class="note">This is optional, for the curious: the real Python mutation tool is <b>mutmut</b> (github.com/boxed/mutmut). It makes many more mutants. It needs Linux, macOS or WSL, and it does not run on plain Windows. That is why this lab gives you the small tool <code>mutation_run.py</code>.</p>
+</section>
+
+<section>
+  <h2>7 · A defect report in five lines</h2>
+<pre>Title:    Senior ticket price is wrong for age 65
+Steps:    Call price(65)
+Expected: 50  (specification: "Age 65-120: senior, 50 TL")
+Actual:   80
+Evidence: test_price[65-50] fails: "assert 80 == 50"</pre>
+  <p class="note">Here is how you test your report: can a classmate repeat the bug with only your five lines? Before you write the report, check that <b>your expected value</b> is correct. A wrong test is not a defect in the code.</p>
+</section>
+
+</div>
+</body>
+</html>

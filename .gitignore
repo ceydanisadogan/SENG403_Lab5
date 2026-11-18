@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Java
+java/target/
+
+# Editors and systems
+.DS_Store
+.idea/
+*.iml
