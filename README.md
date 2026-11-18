@@ -2,6 +2,13 @@
 
 In this lab you measure the coverage of a small program. You write tests for the parts that no test runs. Then you use mutation testing to check how good your tests are.
 
+## Open the worksheet
+
+- Worksheet: https://gokcer.github.io/SENG403_Lab5/SENG403_Lab5_Worksheet.html
+- Cheatsheet: https://gokcer.github.io/SENG403_Lab5/SENG403_Lab5_Cheatsheet.html
+
+Open the worksheet in your own browser and write your answers there. Your browser saves your answers. Use the same browser on the same computer until you finish. At the end, click **Download my answers**.
+
 **Today you may read the code. But the expected result of every test must come from the specification. You find the specification in the worksheet, in step A0.**
 
 ## Start the lab in GitHub Codespaces (recommended)
@@ -12,8 +19,7 @@ You do not need to install anything on your computer. Follow these steps:
 2. Click the **Fork** button at the top of this page. Then click **Create fork**. Now you have your own copy of the lab.
 3. In **your fork**, click the green **Code** button. Open the **Codespaces** tab and click **Create codespace on main**.
 4. Wait a few minutes. The first start installs Python, Java, Maven and the VS Code extensions. It also downloads the test tools. When the terminal says `Lab 5 is ready`, you can start.
-5. Open the worksheet. In the Explorer on the left, right-click `SENG403_Lab5_Worksheet.html` and choose **Show Preview**. Then click the small globe icon at the top of the preview. This opens the worksheet in a normal browser tab. Your answers are saved in that browser tab, and the **Download my answers** button works there.
-6. Open `SENG403_Lab5_Cheatsheet.html` in the same way, and keep it open in another tab.
+5. Open the worksheet and the cheatsheet from the links at the top of this page. You can also open them inside the codespace: right-click the file in the Explorer and choose **Show Preview**.
 
 **Save your work often.** Your code is safe in the codespace. But a codespace is deleted after some weeks without use. To keep your work, commit and push it to your fork: open the **Source Control** view on the left, write a short message, and click **Commit**, then **Sync Changes**.
 
