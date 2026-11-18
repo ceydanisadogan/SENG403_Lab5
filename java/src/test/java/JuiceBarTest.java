@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 class JuiceBarTest {
 
     // ------------------------------------------------------------------
-    // The team's tests. They all pass.
+    // Tests from the development team.
+    // The developers of JuiceBar wrote these 5 tests before you came.
+    // All of them pass now. But maybe they do not test everything well.
     // Do not delete them. You may make one of them stronger in Part C.
     // ------------------------------------------------------------------
     @Test
@@ -38,8 +40,9 @@ class JuiceBarTest {
     }
 
     // ------------------------------------------------------------------
-    // YOUR TESTS (Part B and Part C). Write the expected value from the
-    // SPECIFICATION (worksheet, step A0), not from the code.
+    // YOUR TESTS (Part A2, Part B and Part C). Write your new tests here.
+    // Write the expected value from the SPECIFICATION (worksheet, step A0),
+    // not from the code.
     // The input of a test can come from the code. The expected value must
     // always come from the specification.
     // ------------------------------------------------------------------

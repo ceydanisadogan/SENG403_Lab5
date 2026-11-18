@@ -84,20 +84,31 @@ button.primary{background:var(--accent);border-color:var(--accent);color:#fff;fo
 </header>
 
 <section>
+  <h2>The story of this lab</h2>
+  <div class="card">
+    <p>Imagine that you start a new job at a small company. The company makes the price program of a juice shop, the <b>JuiceBar</b>.</p>
+    <p>The <b>development team</b> of the company wrote the code. The team also wrote <b>5 tests</b>. In the test file, these tests are under the title "Tests from the development team". All 5 tests pass, so the team thinks that the program is fine.</p>
+    <p>Your <b>manager</b> asks you this question: "Our tests pass. But are our tests good? Please check them." Today you are the <b>tester</b>. You measure the tests with two tools, and you add better tests.</p>
+    <p>Today you are also the <b>developer</b>. When one of your tests shows a defect in the code, you correct the code yourself.</p>
+    <p>Remember: a test that passes does not prove that the code is correct. Maybe nobody tested the wrong part.</p>
+  </div>
+</section>
+
+<section>
   <h2>How this lab works</h2>
   <div class="tw"><table>
     <thead><tr><th>Minutes</th><th>Part</th><th>What you do</th></tr></thead>
     <tbody>
-      <tr><td>0–5</td><td>Setup</td><td>You run the tests. The steps are in README.md. All 5 tests pass.</td></tr>
+      <tr><td>0–5</td><td>Setup</td><td>You open the code and run the 5 tests. All 5 tests pass. The steps are in the <a href="https://github.com/gokcer/SENG403_Lab5#readme" target="_blank" rel="noopener">README of the lab</a>.</td></tr>
       <tr><td>5–23</td><td>Part A</td><td><b>Measure.</b> You read the specification. You run the coverage tool and read its report.</td></tr>
       <tr><td>23–40</td><td>Part B</td><td><b>Cover.</b> You add tests until every branch is covered. You look at what the new tests show you.</td></tr>
       <tr><td>40–60</td><td>Part C</td><td><b>Mutate.</b> You run the mutation tool. You kill the mutants that survived. Then you think about the results.</td></tr>
       <tr><td>bonus</td><td>Part D</td><td><b>This part is optional.</b> You ask an LLM to write the tests. Then you measure its tests with the same two tools.</td></tr>
-      <tr><td>60–75</td><td>Debrief</td><td>The class talks about the results. Then you download your answers and hand them in.</td></tr>
+      <tr><td>60–75</td><td>Debrief</td><td>In class, everybody talks about the results together. If you work alone, read your answers in C3 again. Then download your answers and hand them in.</td></tr>
     </tbody>
   </table></div>
   <div class="callout">
-    <p>1. Today you <b>may read the code</b>. This is white-box testing. In white-box testing, the tests come from the structure of the code.</p>
+    <p>1. In the earlier labs, you did black-box testing: you tested the program without looking at its code. Today you <b>may read the code</b>. This is white-box testing. In white-box testing, the tests come from the structure of the code.</p>
     <p>2. The <b>input</b> of a new test comes from the code. Ask yourself: "Which line or branch do I want to reach?" The <b>expected result</b> always comes from the <b>specification</b>. Never copy the expected result from what the code returns.</p>
   </div>
 </section>
@@ -159,7 +170,7 @@ button.primary{background:var(--accent);border-color:var(--accent);color:#fff;fo
 void largeBottle() {
     assertEquals(60, JuiceBar.bottlePrice("L"));
 }</pre>
-    <p>Do <b>not</b> run the new test yet. Fill in the right half of the table and write your prediction.</p>
+    <p>Do <b>not</b> run the new test yet. Fill in the right half of the table and write your prediction. Choose "never reached" when the program never comes to this line, so the decision is never checked.</p>
     <div class="tw"><table>
       <thead><tr><th>Decision</th><th>Team's tests: was it ever true?</th><th>Team's tests: was it ever false?</th><th>With the new test: true?</th><th>With the new test: false?</th></tr></thead>
       <tbody>
@@ -204,9 +215,9 @@ void largeBottle() {
       <p><b>Is one of your new tests red?</b> Then do these three things in this order:</p>
       <p>1. Check your expected value against the specification again. Is the test wrong, or is the code wrong?</p>
       <p>2. If the code is wrong, write the five-line defect report below.</p>
-      <p>3. Today you are also the developer. Correct the code so that it follows the specification. Change as little as you can. Run the tests again. Every test must be green.</p>
+      <p>3. Remember the story: today you are also the developer. Correct the code so that it follows the specification. Change as little as you can. Run the tests again. Every test must be green.</p>
     </div>
-    <p>Write a defect report in five lines. Use the format from lecture slide 27.</p>
+    <p>Write a defect report in five lines. You can see an example in section 7 of the cheatsheet.</p>
     <label class="field">Title: say what is wrong and where, in one line.<input type="text" data-k="b1title" data-label="B1 report · Title"></label>
     <label class="field">Steps: write the call, so that another person can repeat it.<input type="text" data-k="b1steps" data-label="B1 report · Steps"></label>
     <div class="inline">
@@ -222,6 +233,7 @@ void largeBottle() {
   <h2>Part C · Mutation testing (about 20 minutes)</h2>
   <div class="callout">
     <p>Check two things before you start Part C: <b>all tests are green</b>, and branch coverage is <b>100 %</b>. The mutation tool stops if a test already fails on the original code.</p>
+    <p>In Part C, <b>the original code</b> means your code file as it is now, with your corrections from Part B. A <b>mutant</b> is a copy of this file with one small change. The tool makes the mutants. It never changes your own file.</p>
   </div>
 
   <div class="card" data-sub="C1 Run the mutation tool">
@@ -233,6 +245,7 @@ void largeBottle() {
       <label>How many mutants were killed?<input type="text" data-k="c1killed" data-label="C1 killed"></label>
       <label>Mutation score = killed ÷ all<input type="text" data-k="c1score" data-label="C1 mutation score"></label>
     </div>
+    <p class="lang-note">Your numbers can be different from the numbers of a classmate. This is normal: the number of mutants and survivors depends on your tests from Part B and on how you corrected the code.</p>
     <p>List every mutant that survived. For each one, think about this question: <b>which input</b> makes the original code and the mutant give <b>different</b> results?</p>
     <div class="tw"><table class="ft" data-t="surv" data-rows="6" data-cols="mid,change,diff"></table></div>
   </div>
@@ -250,7 +263,7 @@ void largeBottle() {
       <label>New result: how many were killed?<input type="text" data-k="c2killed" data-label="C2 killed"></label>
       <label>What is the new mutation score?<input type="text" data-k="c2score" data-label="C2 mutation score"></label>
     </div>
-    <label class="field">Did you change any of the team's tests? If yes, which test did you change, and why?<textarea data-k="c2team" data-label="C2 team test changed"></textarea></label>
+    <label class="field">Did you change any of the 5 tests from the development team? If yes, which test did you change, and why?<textarea data-k="c2team" data-label="C2 team test changed"></textarea></label>
   </div>
 
   <div class="card" data-sub="C3 Reflect">
@@ -260,7 +273,7 @@ void largeBottle() {
       <label>What did the coverage report help you find in Part B?<textarea data-k="c3cov" data-label="C3 found with the coverage report"></textarea></label>
       <label>What did the surviving mutants help you find in Part C?<textarea data-k="c3mut" data-label="C3 found with the surviving mutants"></textarea></label>
     </div>
-    <label class="field">Your manager says: "Our coverage is 100 %, so our tests are good." Answer your manager in one sentence.<textarea data-k="c3boss" data-label="C3 answer to the manager"></textarea></label>
+    <label class="field">Go back to the story. Your manager now says: "Our coverage is 100 %, so our tests are good." Answer your manager in one sentence.<textarea data-k="c3boss" data-label="C3 answer to the manager"></textarea></label>
   </div>
 </section>
 

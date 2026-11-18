@@ -2,6 +2,12 @@
 
 In this lab you measure the coverage of a small program. You write tests for the parts that no test runs. Then you use mutation testing to check how good your tests are.
 
+## The story
+
+Imagine that you start a new job at a small company. The company makes the price program of a juice shop, the JuiceBar. The development team of the company wrote the code and 5 tests. All 5 tests pass, so the team thinks that the program is fine. Your manager asks you: "Our tests pass. But are our tests good? Please check them."
+
+Today you are the tester: you measure the tests with two tools and you add better tests. You are also the developer: when your test shows a defect in the code, you correct the code yourself. The worksheet tells you each step.
+
 ## Open the worksheet
 
 - Worksheet: https://gokcer.github.io/SENG403_Lab5/SENG403_Lab5_Worksheet.html
@@ -9,7 +15,7 @@ In this lab you measure the coverage of a small program. You write tests for the
 
 Open the worksheet in your own browser and write your answers there. Your browser saves your answers. Use the same browser on the same computer until you finish. At the end, click **Download my answers**.
 
-**Today you may read the code. But the expected result of every test must come from the specification. You find the specification in the worksheet, in step A0.**
+**In the earlier labs you did black-box testing: you did not look at the code. Today you may read the code. But the expected result of every test must come from the specification. You find the specification in the worksheet, in step A0.**
 
 ## Start the lab in GitHub Codespaces (recommended)
 

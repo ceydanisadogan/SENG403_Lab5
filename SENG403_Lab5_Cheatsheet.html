@@ -178,6 +178,7 @@ branch cov.      = branches taken / Branch   = 3 / 4 = 75 %</pre>
 <section>
   <h2>5 · Mutation testing: we test the tests</h2>
   <p>The tool makes one small change in the code. This changed copy is a <b>mutant</b>. Then the tool runs <b>your</b> tests on the mutant. Good tests must fail on it. Before this, all tests must pass on the original code.</p>
+  <p class="note"><b>The original code</b> is your code file as it is now. If you corrected a defect before, the original code includes your correction. The tool never changes your own file. It puts every mutant in a temporary copy.</p>
   <div class="two">
     <div><span class="lbl">Code and tests (100 % branch coverage)</span>
 <pre> 1  def bill(qty, member):
