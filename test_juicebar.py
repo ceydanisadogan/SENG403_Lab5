@@ -51,3 +51,42 @@ def test_team_member_order():
 # def test_my_error():
 #     with pytest.raises(ValueError):
 #         order_price(..., ...)
+def test_large_bottle():
+
+    assert bottle_price("L") == 60
+def test_invalid_quantity_zero():
+    with pytest.raises(ValueError):
+        order_price(0, "S")
+
+
+def test_invalid_quantity_over_20():
+    with pytest.raises(ValueError):
+        order_price(21, "S")
+
+
+def test_invalid_bottle_size():
+    with pytest.raises(ValueError):
+        bottle_price("M")
+
+
+def test_coupon_and_member():
+    assert order_price(3, "S", member=True, coupon=True) == 93
+
+def test_ten_bottle_bulk_discount():
+    assert order_price(10, "S") == 350
+
+
+def test_coupon_is_ten_percent():
+    assert order_price(3, "S", coupon=True) == 108
+
+
+def test_a0_large_coupon_member():
+    assert order_price(12, "L", coupon=True, member=True) == 588
+
+
+def test_minimum_valid_quantity():
+    assert order_price(1, "S") == 40
+
+
+def test_maximum_valid_quantity():
+    assert order_price(20, "S") == 750
